@@ -8,10 +8,7 @@ const getData = api => {
     .catch(error => console.log(error));
 }
 
-const loadData = async () => {
-  const apiUrl = localStorage.getItem('next_fetch') ? localStorage.getItem('next_fetch') : API;
-  const response = await getData(apiUrl);
-
+const drawData = response => {
   localStorage.setItem('next_fetch', response.info.next);
   console.log(`next_fetch ${localStorage.getItem('next_fetch')}`);
   const characters = response.results;
@@ -27,6 +24,29 @@ const loadData = async () => {
   newItem.classList.add('Items');
   newItem.innerHTML = output;
   $app.appendChild(newItem);
+}
+
+const emptyData = () => {
+  let newItem = document.createElement('section');
+  newItem.classList.add('Items');
+  newItem.innerHTML = `
+  <article class="Card">
+    <h2>No hay más datos :)</h2>
+  </article>
+  `;
+  $app.appendChild(newItem);
+}
+
+const loadData = async () => {
+  if (localStorage.getItem('next_fetch') !== "") {
+    const apiUrl = localStorage.getItem('next_fetch') !== null ? localStorage.getItem('next_fetch') : API;
+    const response = await getData(apiUrl);
+    drawData(response);
+  } else {
+    intersectionObserver.disconnect();
+    emptyData();
+  }
+  
 }
 
 const intersectionObserver = new IntersectionObserver(entries => {
