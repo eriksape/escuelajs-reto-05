@@ -38,3 +38,10 @@ const intersectionObserver = new IntersectionObserver(entries => {
 });
 
 intersectionObserver.observe($observe);
+
+if (performance.navigation.type == 1) {
+  localStorage.removeItem('next_fetch');
+} 
+window.addEventListener("beforeunload", function (event) {
+  localStorage.removeItem('next_fetch');
+});
